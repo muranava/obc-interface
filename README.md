@@ -6,5 +6,5 @@ A search interface to the Old Bailey Corpus (www.uni-giessen.de/oldbaileycorpus)
 * Run obcinterface.py
 
 ## Requirements ##
-Python 3.x
-The Old Bailey Corpus XML files (freely available via www.uni-giessen.de/oldbaileycorpus)
+* Python 3.x
+* The Old Bailey Corpus XML files (freely available via www.uni-giessen.de/oldbaileycorpus)
