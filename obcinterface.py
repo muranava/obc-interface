@@ -68,7 +68,7 @@ class OBCInterface:
             pass
         frame_style = ttk.Style()
         frame_style.configure('obcFrame.TFrame', background='deepskyblue')
-        self.root.title("OBC Offline")
+        self.root.title("Old Baily Corpus Interface")
         self.root.columnconfigure(0, weight=1) 
         self.root.rowconfigure(0, weight=1)
         self.main_frame = ttk.Frame(self.root, padding="3 3 3 3", style="obcFrame.TFrame")

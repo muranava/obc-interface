@@ -183,10 +183,25 @@ class SubcorpusFrame(tk.Frame):
         except AttributeError:
             pass
 
+    @staticmethod
+    def get_word_and_utterance_count(results):
+        wc = 0
+        uc = 0
+        for r in results:
+            for u in r['Nodes']:
+                if u.text is not None:
+                    wc += obctools.get_wc_from_string(u.text)
+                    uc += 1
+                else:
+                    print(u)
+        return wc, uc
 
     def finish_subcorpus(self):
         if self.subcorpus_results:
-            self.info_label["text"] = "{} utterances were selected.".format(len(self.subcorpus_results))
+            pc = len(self.subcorpus_results)
+            wc, uc = self.get_word_and_utterance_count(self.subcorpus_results)
+            self.info_label["text"] = "{} utterances ({}) were selected" \
+                                      " from {} proceedings.".format(uc, wc, pc)
 
             subcorpus_path = os.path.join(self.main.tool_path, "subcorpora")
             if obctools.make_dir(subcorpus_path):
@@ -199,9 +214,13 @@ class SubcorpusFrame(tk.Frame):
                                 handler.write(s)
                                 handler.write("\n\n")
                 else:
+                   
                     tree = etree.fromstring('<subcorpus filename="{0}"></subcorpus>'.format(self.filename))
                     xml = etree.ElementTree(tree)
                     root = xml.getroot()
+                    root.set("utterances", str(uc))
+                    root.set("words", str(wc))
+                    root.set("proceedings", str(pc))
                     for r in self.subcorpus_results:
                         for sn in r['Nodes']:
                             sn.set("filename",r['Filename'])
@@ -211,7 +230,13 @@ class SubcorpusFrame(tk.Frame):
                             xml.write(handler, xml_declaration=True, encoding="utf-8")
                         except IOError as e:
                             print(e)
-            self.info_label.config(text="Done. Subcorpus saved as {0}.".format(os.path.basename(self.filename)))
+            self.info_label["text"] = "{:,} utterances ({:,} words) were selected" \
+                                      " from {} proceedings" \
+                                      " & saved as {}".format(uc, wc, len(self.subcorpus_results),
+                                                              os.path.basename(self.filename))
+
+            #self.info_label.config(text="Done. Subcorpus saved as {0}.".format(os.path.basename(self.filename)))
+
             self.subcorpus_results = None
             self.main.root.update_idletasks()
 
